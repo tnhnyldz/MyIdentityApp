@@ -20,7 +20,7 @@ namespace MyIdentityApp.Web.ViewModels
 		[Display(Name = "Kullanıcı Adı :")]
 		public string UserName { get; set; }
 
-		[EmailAddress(ErrorMessage ="Email formatı yanlış.")]
+		[EmailAddress(ErrorMessage = "Email formatı yanlış.")]
 		[Required(ErrorMessage = "Email alanı boş olamaz.")]
 		[Display(Name = "Email :")]
 		public string Email { get; set; }
@@ -33,7 +33,7 @@ namespace MyIdentityApp.Web.ViewModels
 		[Display(Name = "Şifre :")]
 		public string Password { get; set; }
 
-		[Compare(nameof(Password),ErrorMessage ="Girilen şifreler eşleşmemektedir.")]
+		[Compare(nameof(Password), ErrorMessage = "Girilen şifreler eşleşmemektedir.")]
 		[Required(ErrorMessage = "Şifre tekrarı alanı boş olamaz.")]
 		[Display(Name = "Şifre tekrar :")]
 		public string PasswordConfirm { get; set; }
