@@ -32,6 +32,7 @@ namespace MyIdentityApp.Web.Controllers
 				return View();
 			}
 
+			//will go validator classes from now
 			var identityResult = await _userManager.CreateAsync(
 				new AppUser
 				{
