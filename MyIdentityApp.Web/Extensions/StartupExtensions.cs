@@ -20,6 +20,10 @@ namespace MyIdentityApp.Web.Extensions
 				options.Password.RequireUppercase = false;
 				options.Password.RequireDigit = false;
 
+				//user lockout on failure settings
+				options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(3);
+				options.Lockout.MaxFailedAccessAttempts = 7;
+
 			}).AddPasswordValidator<PasswordValidator>()
 			.AddUserValidator<UserValidator>()
 			.AddErrorDescriber<LocalizationIdentityErrorDescriber>()
