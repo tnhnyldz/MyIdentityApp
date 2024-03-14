@@ -7,7 +7,7 @@
 }
 <div class="row">
 	<div class="col-md-8 offset-md-2">
-		<h2 class="mb-4">Kullanıcı Kayıt Formu</h2>
+		<h2 class="mb-4">Kullanıcı Kayıt</h2>
 		@if (TempData["SucseedMessage"] is not null)
 		{
 			<div class="alert alert-info" role="alert">
@@ -16,7 +16,6 @@
 		}
 		@* if key section is empty ModelOnly will works *@
 		<div asp-validation-summary=ModelOnly class="alert alert-danger" role="alert">
-			@TempData["SucseedMessage"]
 		</div>
 		<form asp-controller="Home" asp-action="SignUp" method="post">
 			<div class="row mb-3">
