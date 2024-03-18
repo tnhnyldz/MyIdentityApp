@@ -24,7 +24,7 @@ namespace MyIdentityApp.Web.ViewModels
 		[Display(Name = "Şifre :")]
 		public string Password { get; set; }
 
-		[Display(Name = "Beni hatırla :")]
+		[Display(Name = "Beni hatırla ")]
 		public bool RememberMe { get; set; }
     }
 }
