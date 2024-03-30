@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using MyIdentityApp.Web.Extensions;
 using MyIdentityApp.Web.Models;
+using MyIdentityApp.Web.OptionsModels;
+using MyIdentityApp.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,10 +15,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("SqlCon"));
 });
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+
 //ýdentity configs
 builder.Services.AddIdentityWithExt();
-
-
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
