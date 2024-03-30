@@ -29,10 +29,12 @@ namespace MyIdentityApp.Web.ViewModels
 		[Display(Name = "Telefon :")]
 		public string Phone { get; set; }
 
+		[DataType(DataType.Password)]
 		[Required(ErrorMessage = "Şifre alanı boş olamaz.")]
 		[Display(Name = "Şifre :")]
 		public string Password { get; set; }
 
+		[DataType(DataType.Password)]
 		[Compare(nameof(Password), ErrorMessage = "Girilen şifreler eşleşmemektedir.")]
 		[Required(ErrorMessage = "Şifre tekrarı alanı boş olamaz.")]
 		[Display(Name = "Şifre tekrar :")]

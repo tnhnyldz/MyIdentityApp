@@ -5,6 +5,8 @@ using MyIdentityApp.Web.Models;
 using MyIdentityApp.Web.ViewModels;
 using System.Diagnostics;
 using MyIdentityApp.Web.Extensions;
+using MyIdentityApp.Web.Services;
+using NuGet.Common;
 
 namespace MyIdentityApp.Web.Controllers
 {
@@ -13,12 +15,14 @@ namespace MyIdentityApp.Web.Controllers
 		private readonly ILogger<HomeController> _logger;
 		private readonly UserManager<AppUser> _userManager;
 		private readonly SignInManager<AppUser> _signInManager;
+		private readonly IEmailService _emailService;
 
-		public HomeController(ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+		public HomeController(IEmailService emailService, ILogger<HomeController> logger, UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
 		{
 			_logger = logger;
 			_userManager = userManager;
 			_signInManager = signInManager;
+			_emailService = emailService;
 		}
 
 		[HttpGet]
@@ -56,6 +60,70 @@ namespace MyIdentityApp.Web.Controllers
 			return View();
 		}
 
+		public IActionResult ForgotPassword()
+		{
+			return View();
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel request)
+		{
+			var hasUser = await _userManager.FindByEmailAsync(request.Email);
+			if (hasUser is null)
+			{
+				ModelState.AddModelError(string.Empty, "Bu email adresine sahip kullanıcı bulunamamıştır.");
+				return View();
+			}
+
+			string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(hasUser);
+			var passwordResetLink = Url.Action("ResetPassword", "Home", new { userId = hasUser.Id, Token = passwordResetToken }, HttpContext.Request.Scheme);
+
+			await _emailService.SendResetPasswordEmail(passwordResetLink!, request.Email);
+
+			TempData["SucseedMessage"] = "Şifre yenileme link email adresinize gönderilmiştir.";
+
+			return RedirectToAction(nameof(ForgotPassword));
+		}
+		[HttpGet]
+		public IActionResult ResetPassword(string userId, string token)
+		{
+			TempData["userId"] = userId;
+			TempData["token"] = token;
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> ResetPassword(ResetPasswordViewModel request)
+		{
+			var userId = TempData["userId"];
+			var token = TempData["token"];
+
+			if (userId is null || token is null)
+			{
+				throw new Exception("Bir hata meydana geldi");
+			}
+
+			var hasUser = await _userManager.FindByIdAsync(userId.ToString()!);
+
+			if (hasUser is null)
+			{
+				ModelState.AddModelError(string.Empty, "Kullanıcı bulunamamıştır");
+				return View();
+			}
+
+			IdentityResult result = await _userManager.ResetPasswordAsync(hasUser, token.ToString()!, request.Password);
+
+			if (result.Succeeded)
+			{
+				TempData["SucseedMessage"] = $"Şifreniz yenildendi yeni şifreniz: {request.Password}";
+			}
+			else
+			{
+				ModelState.AddModelErrorList(result.Errors.Select(x => x.Description).ToList());
+				return View();
+			}
+			return View();
+		}
+
 		[HttpGet]
 		public IActionResult SignIn()
 		{
@@ -66,7 +134,7 @@ namespace MyIdentityApp.Web.Controllers
 		public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null) //model comes with requests body, returnUrl comes with request url
 		{
 			//returnUrl = !string.IsNullOrEmpty(returnUrl) ? returnUrl : Url.Action("Index", "Home");
-			returnUrl = returnUrl ?? Url.Action("Index", "Home"); //one of url class static methods
+			returnUrl ??= Url.Action("Index", "Home"); //one of url class static methods
 
 			var hasUser = await _userManager.FindByEmailAsync(model.Email);
 
@@ -80,7 +148,7 @@ namespace MyIdentityApp.Web.Controllers
 
 			if (signInResult.Succeeded)
 			{
-				return Redirect(returnUrl);
+				return Redirect(returnUrl!);
 			}
 			if (signInResult.IsLockedOut)
 			{
