@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MyIdentityApp.Web.Extensions;
 using MyIdentityApp.Web.Models;
@@ -8,6 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+//control of security stamp from user table
+builder.Services.Configure<SecurityStampValidatorOptions>(options =>
+{
+	options.ValidationInterval = TimeSpan.FromMinutes(30);
+});
 
 //adding context
 builder.Services.AddDbContext<AppDbContext>(options =>
