@@ -32,12 +32,14 @@ namespace MyIdentityApp.Web.ViewModels
 		[DataType(DataType.Password)]
 		[Required(ErrorMessage = "Şifre alanı boş olamaz.")]
 		[Display(Name = "Şifre :")]
+		[MinLength(6, ErrorMessage = "Şifreniz en az 6 karakter olmalıdır.")]
 		public string Password { get; set; }
 
 		[DataType(DataType.Password)]
 		[Compare(nameof(Password), ErrorMessage = "Girilen şifreler eşleşmemektedir.")]
 		[Required(ErrorMessage = "Şifre tekrarı alanı boş olamaz.")]
 		[Display(Name = "Şifre tekrar :")]
+		[MinLength(6, ErrorMessage = "Şifreniz en az 6 karakter olmalıdır.")]
 		public string PasswordConfirm { get; set; }
 	}
 }

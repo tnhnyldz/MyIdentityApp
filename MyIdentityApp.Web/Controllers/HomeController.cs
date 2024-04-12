@@ -133,6 +133,10 @@ namespace MyIdentityApp.Web.Controllers
 		[HttpPost]
 		public async Task<IActionResult> SignIn(SignInViewModel model, string? returnUrl = null) //model comes with requests body, returnUrl comes with request url
 		{
+			if (!ModelState.IsValid)
+			{
+				return View();
+			}
 			//returnUrl = !string.IsNullOrEmpty(returnUrl) ? returnUrl : Url.Action("Index", "Home");
 			returnUrl ??= Url.Action("Index", "Home"); //one of url class static methods
 

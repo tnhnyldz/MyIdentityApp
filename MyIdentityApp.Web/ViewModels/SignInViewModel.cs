@@ -22,6 +22,7 @@ namespace MyIdentityApp.Web.ViewModels
 
 		[DataType(DataType.Password)]
 		[Required(ErrorMessage = "Şifre alanı boş olamaz.")]
+		[MinLength(6, ErrorMessage = "Şifreniz en az 6 karakter olmalıdır.")]
 		[Display(Name = "Şifre :")]
 		public string Password { get; set; }
 
