@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MyIdentityApp.Web.Extensions;
 using MyIdentityApp.Web.Models;
 using MyIdentityApp.Web.OptionsModels;
@@ -29,6 +30,9 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 //ýdentity configs
 builder.Services.AddIdentityWithExt();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+
+builder.Services.AddSingleton<IFileProvider>(new PhysicalFileProvider(Directory.GetCurrentDirectory()));
 
 builder.Services.ConfigureApplicationCookie(opt =>
 {
